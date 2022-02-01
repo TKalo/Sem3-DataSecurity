@@ -1,0 +1,11 @@
+FROM cassandra:latest
+
+COPY ./tables.cql ./
+
+COPY ./cassandra_run.sh .
+
+EXPOSE 9042
+
+RUN chmod +x cassandra_run.sh
+
+#CMD ["/cassandra_run.sh"]

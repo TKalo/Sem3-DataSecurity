@@ -1,0 +1,5 @@
+include:
+  - project: 'semester-project-e2021/team-12/ci-cd'
+    ref: team_11
+    file: 'pipelines/team11.yml'
+ 

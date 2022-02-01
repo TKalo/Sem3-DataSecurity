@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t11-api
+  labels:
+    app: t11-api
+spec:
+  selector:
+    matchLabels:
+      app: t11-api
+  template:
+    metadata:
+      labels:
+        app: t11-api
+    spec:
+      containers:
+      - name: t11-api
+        image: gitlab.sdu.dk:5050/semester-project-e2021/team-11/template/nodeserver:latest
+        ports:
+        - containerPort: 7000
+        env:
+          - name: IP
+            value: t11-cassandra:9042
+          - name: USERNAME
+            value: team11
+          - name: PASSWORD
+            value: datasecurity
+        resources:
+          limits:
+            cpu: 200m
+            memory: 1Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+      imagePullSecrets:
+      - name: sdugitlab
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: t11-api
+spec:
+  selector:
+    app: t11-api
+  ports:
+  - protocol: TCP
+    port: 7000
+    targetPort: 7000

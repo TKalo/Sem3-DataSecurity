@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: t11-cassandra
+  labels:
+    app: t11-cassandra
+spec:
+  serviceName: t11-cassandra
+  replicas: 3
+  selector:
+    matchLabels:
+      app: t11-cassandra
+  template:
+    metadata:
+      labels:
+        app: t11-cassandra
+    spec:
+      terminationGracePeriodSeconds: 1800
+      containers:
+      - name: t11-cassandra
+        image: gitlab.sdu.dk:5050/semester-project-e2021/team-11/template/cassandra:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7000
+          name: intra-node
+        - containerPort: 7001
+          name: tls-intra-node
+        - containerPort: 7199
+          name: jmx
+        - containerPort: 9042
+          name: cql
+        resources:
+          limits:
+            cpu: 450m
+            memory: 1.5Gi
+          requests:
+            cpu: 450m
+            memory: 1.5Gi
+        securityContext:
+          capabilities:
+            add:
+              - IPC_LOCK
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - ./postStart.sh
+          preStop:
+            exec:
+              command: 
+              - /bin/sh
+              - -c
+              - nodetool drain
+        env:
+          - name: MAX_HEAP_SIZE
+            value: 512M
+          - name: HEAP_NEWSIZE
+            value: 100M
+          - name: CASSANDRA_SEEDS
+            value: "t11-cassandra-0.t11-cassandra"
+          - name: CASSANDRA_CLUSTER_NAME
+            value: "Team 11"
+          - name: CASSANDRA_DC
+            value: "datacenter1"
+          - name: CASSANDRA_RACK
+            value: "rack1"
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        volumeMounts:
+        - name: cassandra-data
+          mountPath: /cassandra_data
+      imagePullSecrets:
+      - name: sdugitlab
+  volumeClaimTemplates:
+  - metadata:
+      name: cassandra-data
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 1Gi

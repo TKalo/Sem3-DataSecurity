@@ -1,0 +1,19 @@
+version: "3.9"  # optional since v1.27.0
+
+networks:
+  internal:
+
+services:
+  cassandra:
+    build: './Cassandra/'
+    networks:
+      - internal
+  nodejs:
+    build: 
+      context: './NodeJS/'
+      dockerfile: './DockerfileTest'
+    depends_on: 
+      - cassandra
+    command: ["bash","wait-for-cassandra.sh", "&&","node", "app.js"]
+    networks:
+      - internal

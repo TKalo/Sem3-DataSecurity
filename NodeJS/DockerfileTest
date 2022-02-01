@@ -1,0 +1,19 @@
+FROM node:latest
+
+WORKDIR /usr/src/app
+
+COPY ./app .
+
+COPY ./wait-for-cassandra.sh .
+
+RUN npm install
+
+RUN npm install --save validate.js
+
+RUN npm install crypto
+
+RUN npm install --save test
+
+RUN npm install -g cqlsh-node
+
+CMD [ "npm","test"]

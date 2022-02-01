@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "buffer": "^6.0.3",
+    "cassandra-driver": "^4.6.3",
+    "crypto": "^1.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "marky": "^1.2.2",
+    "uuid": "^8.3.2",
+    "validate.js": "^0.13.1"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^27.3.1"
+  }
+}
